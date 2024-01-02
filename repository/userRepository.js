@@ -17,6 +17,18 @@ export class UserRepository {
     return rows[0];
   };
 
+  // for authService
+  getUserByUsername = async (Username) => {
+    const [rows] = await pool.query(
+      `SELECT * 
+      FROM users
+      WHERE Username = ?
+      `,
+      [Username]
+    );
+    return rows[0];
+  };
+
   deleteUserById = async (UserID) => {
     const [rows] = await pool.query(
       `
