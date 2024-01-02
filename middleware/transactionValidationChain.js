@@ -1,17 +1,17 @@
 import { body } from "express-validator";
 
 export const transactionValidationChain = [
-  body("UserID")
+  body("userId")
     .exists()
     .isInt()
     .withMessage("UserID is required and must be an integer"),
 
-  body("AccountID")
+  body("accountId")
     .exists()
     .isInt()
     .withMessage("AccountID is required and must be an integer"),
 
-  body("Amount")
+  body("amount")
     .exists()
     // Decimal(15,2)
     .isDecimal({
@@ -21,14 +21,14 @@ export const transactionValidationChain = [
     })
     .withMessage("Amount is required and must be a decimal"),
 
-  body("TransactionDate")
+  body("transactionDate")
     .exists()
     .isISO8601()
     // be aware of the data type
     .withMessage("TransactionDate is required and must be a valid date"),
 
   // optional
-  body("Description")
+  body("description")
     .optional()
     .isString()
     .withMessage("Description must be a string"),

@@ -18,9 +18,4 @@ router.post(
   authController.registerGeneral
 );
 
-router.post(
-  "/login",
-  userValidationChain,
-  handleValidationErrors,
-  authController.login
-);
+router.post("/login", authController.login);

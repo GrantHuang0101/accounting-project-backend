@@ -5,6 +5,7 @@ import { transactionValidationChain } from "../middleware/transactionValidationC
 import { handleValidationErrors } from "../middleware/handleValidationErrors.middleware.js";
 import { UserRepository } from "../repository/userRepository.js";
 import { AuthService } from "../service/authService.js";
+import { jwtGuardMiddleware } from "../middleware/jwtGuard.middleware.js";
 
 const router = express.Router();
 

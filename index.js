@@ -6,7 +6,6 @@ import accountRoute from "./routes/accountRoute.js";
 import transactionRoute from "./routes/transactionRoute.js";
 import dotenv from "dotenv";
 import { errorHandler } from "./middleware/errorHandler.js";
-import { HttpError } from "./utils/errors/httpError.js";
 dotenv.config();
 
 const app = express();

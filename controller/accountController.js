@@ -29,9 +29,9 @@ export class AccountController {
 
   createAccount = async (req, res, next) => {
     try {
-      const { AccountName } = req.body;
+      const { accountName } = req.body;
       const newAccount = await this.accountRepository.createAccount(
-        AccountName
+        accountName
       );
 
       return res.status(201).send(newAccount);

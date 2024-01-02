@@ -31,12 +31,12 @@ export class UserController {
 
   createUser = async (req, res, next) => {
     try {
-      const { Username, Password, Email, Role } = req.body;
+      const { username, password, email, role } = req.body;
       const newUser = await this.userRepository.createUser(
-        Username,
-        Password,
-        Email,
-        Role
+        username,
+        password,
+        email,
+        role
       );
 
       return res.status(201).send(newUser);

@@ -6,39 +6,39 @@ export class AccountRepository {
     return rows;
   };
 
-  getAccountById = async (AccountID) => {
+  getAccountById = async (accountId) => {
     const [rows] = await pool.query(
       `
       SELECT * 
       FROM accounts
-      WHERE AccountID = ?
+      WHERE accountId = ?
       `,
-      [AccountID]
+      [accountId]
     );
     return rows[0];
   };
 
-  createAccount = async (AccountName) => {
+  createAccount = async (accountName) => {
     const [result] = await pool.query(
       `
-      INSERT INTO accounts (AccountName)
+      INSERT INTO accounts (accountName)
       VALUES (?)
       `,
-      [AccountName]
+      [accountName]
     );
     const newAccountId = result.insertId;
     return this.getAccountById(newAccountId);
   };
 
-  deleteAccountById = async (AccountID) => {
+  deleteAccountById = async (accountId) => {
     const [rows] = await pool.query(
       `
       DELETE FROM accounts
-      WHERE AccountID = ?
+      WHERE accountId = ?
       `,
-      [AccountID]
+      [accountId]
     );
-    console.log(`Account with ID ${AccountID} has been deleted.`);
+    console.log(`Account with ID ${accountId} has been deleted.`);
     return null;
   };
 }

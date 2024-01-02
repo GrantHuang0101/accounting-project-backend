@@ -44,14 +44,14 @@ export class TransactionController {
 
   createTransaction = async (req, res, next) => {
     try {
-      const { UserID, AccountID, Amount, TransactionDate, Description } =
+      const { userId, accountId, amount, transactionDate, description } =
         req.body;
       const newTransaction = await this.transactionRepository.createTransaction(
-        UserID,
-        AccountID,
-        Amount,
-        TransactionDate,
-        Description
+        userId,
+        accountId,
+        amount,
+        transactionDate,
+        description
       );
 
       return res.status(201).send(newTransaction);

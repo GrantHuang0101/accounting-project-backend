@@ -25,7 +25,7 @@ export class AuthService {
     if (!user) {
       throw new HttpError(404, "Incorrect username or password");
     }
-    const isPasswordValid = await bcrypt.compare(password, user.Password);
+    const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       throw new HttpError(404, "Incorrect username or password");
     }
@@ -33,11 +33,11 @@ export class AuthService {
   };
 
   generateToken = (user) => {
-    const { UserID, Username, Role } = user;
+    const { userId, username, role } = user;
     const payload = {
-      userId: UserID,
-      username: Username,
-      role: Role,
+      userId: userId,
+      username: username,
+      role: role,
     };
 
     return jwt.sign(payload, String(JwtConfig["secretKey"]), {
@@ -49,7 +49,6 @@ export class AuthService {
   };
 
   verifyToken = (token) => {
-    // any?
     return jwt.verify(token, String(JwtConfig["secretKey"]), {
       algorithms: "HS256",
       audience: JwtConfig["audience"],

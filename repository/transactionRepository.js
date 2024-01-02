@@ -7,83 +7,82 @@ export class TransactionRepository {
     return rows;
   };
 
-  getAllTransactionsByUserId = async (UserID) => {
+  getAllTransactionsByUserId = async (userId) => {
     const [rows] = await pool.query(
       `
     SELECT * 
     FROM transactions
-    WHERE UserID = ?
+    WHERE userId = ?
     `,
-      [UserID]
+      [userId]
     );
     return rows;
   };
 
-  getTransactionById = async (TransactionId) => {
+  getTransactionById = async (transactionId) => {
     const [rows] = await pool.query(
       `SELECT * 
     FROM transactions
-    WHERE TransactionId = ?
+    WHERE transactionId = ?
     `,
-      [TransactionId]
+      [transactionId]
     );
     return rows[0];
   };
 
   createTransaction = async (
-    UserID,
-    AccountID,
-    Amount,
-    TransactionDate,
-    Description
+    userId,
+    accountId,
+    amount,
+    transactionDate,
+    description
   ) => {
     const [result] = await pool.query(
       `
-    INSERT INTO transactions (UserID, AccountID, Amount, TransactionDate, Description)
+    INSERT INTO transactions (userId, accountId, amount, transactionDate, description)
     VALUES (?, ?, ?, ?, ?)
     `,
-      [UserID, AccountID, Amount, TransactionDate, Description]
+      [userId, accountId, amount, transactionDate, description]
     );
     const newTransactionId = result.insertId;
     return this.getTransactionById(newTransactionId);
   };
 
-  deleteTransactionById = async (TransactionId) => {
+  deleteTransactionById = async (transactionId) => {
     await pool.query(
       `
     DELETE FROM transactions
-    WHERE TransactionId = ?
+    WHERE transactionId = ?
     `,
-      [TransactionId]
+      [transactionId]
     );
 
-    console.log(`Transaction with ID ${TransactionId} has been deleted.`);
+    console.log(`Transaction with ID ${transactionId} has been deleted.`);
     return null;
   };
 
-  updateTransactionById = async (TransactionId, updates) => {
-    const { AccountID, Amount, TransactionDate, Description } = updates;
+  updateTransactionById = async (transactionId, updates) => {
+    const { accountId, amount, transactionDate, description } = updates;
     const [result] = await pool.query(
       `
     UPDATE transactions
     SET
-      AccountID = ?,
-      Amount = ?,
-      TransactionDate = ?,
-      Description = ?
-    WHERE TransactionId = ?
+      accountId = ?,
+      amount = ?,
+      transactionDate = ?,
+      description = ?
+    WHERE transactionId = ?
     `,
-      [AccountID, Amount, TransactionDate, Description, TransactionId]
-      //Only the original user can update the transaction
+      [accountId, amount, transactionDate, description, transactionId]
     );
 
     if (result.affectedRows === 0) {
       throw new HttpError(
         404,
-        `Transaction with ID ${TransactionId} not found.`
+        `Transaction with ID ${transactionId} not found.`
       );
     }
-    const updatedTransaction = await this.getTransactionById(TransactionId);
+    const updatedTransaction = await this.getTransactionById(transactionId);
     return updatedTransaction;
   };
 }

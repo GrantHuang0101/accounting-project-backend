@@ -6,50 +6,50 @@ export class UserRepository {
     return rows;
   };
 
-  getUserById = async (UserID) => {
+  getUserById = async (userId) => {
     const [rows] = await pool.query(
       `SELECT * 
     FROM users
-    WHERE UserID = ?
+    WHERE userId = ?
     `,
-      [UserID]
+      [userId]
     );
     return rows[0];
   };
 
   // for authService
-  getUserByUsername = async (Username) => {
+  getUserByUsername = async (username) => {
     const [rows] = await pool.query(
       `SELECT * 
       FROM users
-      WHERE Username = ?
+      WHERE username = ?
       `,
-      [Username]
+      [username]
     );
     return rows[0];
   };
 
-  deleteUserById = async (UserID) => {
-    const [rows] = await pool.query(
+  deleteUserById = async (userId) => {
+    await pool.query(
       `
     DELETE FROM users
-    WHERE UserID = ?
+    WHERE userId = ?
     `,
-      [UserID]
+      [userId]
     );
-    console.log(`User with ID ${UserID} has been deleted.`);
+    console.log(`User with ID ${userId} has been deleted.`);
     return null;
   };
 
-  createUser = async (Username, Password, Email, Role) => {
+  createUser = async (username, password, email, role) => {
     const [result] = await pool.query(
       `
-    INSERT INTO users (Username, Password, Email, Role)
+    INSERT INTO users (username, password, email, role)
     VALUES (?, ?, ?, ?)
     `,
-      [Username, Password, Email, Role]
+      [username, password, email, role]
     );
-    const UserID = result.insertId;
-    return this.getUserById(UserID);
+    const userId = result.insertId;
+    return this.getUserById(userId);
   };
 }

@@ -1,17 +1,17 @@
 import { body } from "express-validator";
 
 export const userValidationChain = [
-  body("Username")
+  body("username")
     .exists()
     .isString()
     .withMessage("Username is required and must be a string"),
 
-  body("Password")
+  body("password")
     .exists()
     .isString()
     .withMessage("Password is required and must be a string"),
 
-  body("Email")
+  body("email")
     .exists()
     .isEmail()
     .withMessage("Email is required and must be a valid email address"),
