@@ -7,6 +7,7 @@ import transactionRoute from "./routes/transactionRoute.js";
 import authRoute from "./routes/authRoute.js";
 import dotenv from "dotenv";
 import { errorHandler } from "./middleware/errorHandler.js";
+import { jwtGuardMiddleware } from "./middleware/jwtGuard.middleware.js";
 dotenv.config();
 
 const app = express();
@@ -15,9 +16,10 @@ app.use(express.json());
 app.use(cors());
 
 //Routes
-//login, sign-up routes
 app.use("/", authRoute);
-//Token Auth
+
+app.use(jwtGuardMiddleware(authService));
+
 app.use("/users", userRoute);
 app.use("/accounts", accountRoute);
 app.use("/transactions", transactionRoute);

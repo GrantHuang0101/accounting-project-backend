@@ -5,7 +5,6 @@ import { transactionValidationChain } from "../middleware/transactionValidationC
 import { handleValidationErrors } from "../middleware/handleValidationErrors.middleware.js";
 import { UserRepository } from "../repository/userRepository.js";
 import { AuthService } from "../service/authService.js";
-import { jwtGuardMiddleware } from "../middleware/jwtGuard.middleware.js";
 
 const router = express.Router();
 
@@ -14,8 +13,6 @@ const transactionController = new TransactionController(transactionRepository);
 
 const userRepository = new UserRepository();
 const authService = new AuthService(userRepository);
-
-router.use(jwtGuardMiddleware(authService));
 
 router.get("/:userId", transactionController.getAllTransactionsByUserId);
 
