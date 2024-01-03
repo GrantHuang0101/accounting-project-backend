@@ -1,7 +1,7 @@
 import { JwtConfig } from "../jwt.config.js";
 import { HttpError } from "../utils/errors/httpError.js";
 import * as bcrypt from "bcrypt";
-import * as jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 export class AuthService {
   constructor(userRepository) {
@@ -10,10 +10,10 @@ export class AuthService {
 
   registerGeneral = async (userInfo) => {
     const { username, password, email } = userInfo;
-    password = await bcrypt.hash(password, 10);
+    const hashPassword = await bcrypt.hash(password, 10);
     return await this.userRepository.createUser(
       username,
-      password,
+      hashPassword,
       email,
       "user"
     );

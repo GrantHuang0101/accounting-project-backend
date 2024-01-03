@@ -4,6 +4,7 @@ import { checkDatabaseConnection } from "./database.js";
 import userRoute from "./routes/userRoute.js";
 import accountRoute from "./routes/accountRoute.js";
 import transactionRoute from "./routes/transactionRoute.js";
+import authRoute from "./routes/authRoute.js";
 import dotenv from "dotenv";
 import { errorHandler } from "./middleware/errorHandler.js";
 dotenv.config();
@@ -15,6 +16,7 @@ app.use(cors());
 
 //Routes
 //login, sign-up routes
+app.use("/", authRoute);
 //Token Auth
 app.use("/users", userRoute);
 app.use("/accounts", accountRoute);

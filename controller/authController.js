@@ -10,14 +10,17 @@ export class AuthController {
     try {
       const userInfo = req.body;
 
-      if (await this.userRepository.getUserbyUsername(userInfo.username)) {
-        next(new HttpError(409, "User already exists"));
+      if (await this.userRepository.getUserByUsername(userInfo.username)) {
+        return next(new HttpError(409, "User already exists"));
       }
 
       const user = await this.authService.registerGeneral(userInfo);
       const token = this.authService.generateToken(user);
 
-      res.status(201).json({ user: user, token: token });
+      const { userId, username, email, role } = user;
+      res
+        .status(201)
+        .json({ user: { userId, username, email, role }, token: token });
     } catch (error) {
       next(error);
     }
@@ -29,7 +32,10 @@ export class AuthController {
       const user = await this.authService.login(userInfo);
       const token = this.authService.generateToken(user);
 
-      res.status(201).json({ user: user, token: token });
+      const { userId, username, email, role } = user;
+      res
+        .status(200)
+        .json({ user: { userId, username, email, role }, token: token });
     } catch (error) {
       next(error);
     }
