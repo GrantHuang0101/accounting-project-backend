@@ -1,3 +1,5 @@
+import { HttpError } from "../utils/errors/httpError.js";
+
 export class AccountController {
   constructor(accountRepository) {
     this.accountRepository = accountRepository;

@@ -1,11 +1,6 @@
 import { body } from "express-validator";
 
 export const transactionValidationChain = [
-  body("userId")
-    .exists()
-    .isInt()
-    .withMessage("UserID is required and must be an integer"),
-
   body("accountId")
     .exists()
     .isInt()

@@ -1,3 +1,5 @@
+import { HttpError } from "../utils/errors/httpError.js";
+
 export class TransactionController {
   constructor(transactionRepository) {
     this.transactionRepository = transactionRepository;
