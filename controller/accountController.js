@@ -19,6 +19,7 @@ export class AccountController {
 
       if (!account) {
         next(new HttpError(404, `Account with ID ${id} not found.`));
+        return;
       }
 
       return res.status(200).send(account);
@@ -47,6 +48,7 @@ export class AccountController {
 
       if (!deleted) {
         next(new HttpError(404, `Account with ID ${id} not found.`));
+        return;
       }
 
       await this.accountRepository.deleteAccountById(id);

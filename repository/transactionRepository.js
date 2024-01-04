@@ -63,7 +63,7 @@ export class TransactionRepository {
 
   updateTransactionById = async (transactionId, updates) => {
     const { accountId, amount, transactionDate, description } = updates;
-    const [result] = await pool.query(
+    await pool.query(
       `
     UPDATE transactions
     SET
@@ -76,12 +76,6 @@ export class TransactionRepository {
       [accountId, amount, transactionDate, description, transactionId]
     );
 
-    if (result.affectedRows === 0) {
-      throw new HttpError(
-        404,
-        `Transaction with ID ${transactionId} not found.`
-      );
-    }
     const updatedTransaction = await this.getTransactionById(transactionId);
     return updatedTransaction;
   };

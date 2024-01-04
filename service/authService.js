@@ -19,6 +19,17 @@ export class AuthService {
     );
   };
 
+  registerAdmin = async (userInfo) => {
+    const { username, password, email } = userInfo;
+    const hashPassword = await bcrypt.hash(password, 10);
+    return await this.userRepository.createUser(
+      username,
+      hashPassword,
+      email,
+      "admin"
+    );
+  };
+
   login = async (userInfo) => {
     const { username, password } = userInfo;
     const user = await this.userRepository.getUserByUsername(username);

@@ -18,6 +18,13 @@ router.post(
   authController.registerGeneral
 );
 
+router.post(
+  "/register/admin",
+  userValidationChain,
+  handleValidationErrors,
+  authController.registerAdmin
+);
+
 router.post("/login", authController.login);
 
 export default router;

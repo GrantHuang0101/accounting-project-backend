@@ -3,17 +3,14 @@ import { UserRepository } from "../repository/userRepository.js";
 import { UserController } from "../controller/userController.js";
 import { userValidationChain } from "../middleware/userValidationChain.js";
 import { handleValidationErrors } from "../middleware/handleValidationErrors.middleware.js";
-import { AuthService } from "../service/authService.js";
+import { adminGuardMiddleware } from "../middleware/adminGuard.middleware.js";
 
 const router = express.Router();
 
 const userRepository = new UserRepository();
 const userController = new UserController(userRepository);
-const authService = new AuthService(userRepository);
 
-//.....
-
-//admin
+router.use(adminGuardMiddleware);
 
 router.get("/", userController.getAllUsers);
 

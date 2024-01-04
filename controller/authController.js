@@ -40,4 +40,24 @@ export class AuthController {
       next(error);
     }
   };
+
+  registerAdmin = async (req, res, next) => {
+    try {
+      const userInfo = req.body;
+
+      if (await this.userRepository.getUserByUsername(userInfo.username)) {
+        return next(new HttpError(409, "User already exists"));
+      }
+
+      const user = await this.authService.registerAdmin(userInfo);
+      const token = this.authService.generateToken(user);
+
+      const { userId, username, email, role } = user;
+      res
+        .status(201)
+        .json({ user: { userId, username, email, role }, token: token });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

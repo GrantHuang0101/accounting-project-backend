@@ -21,6 +21,7 @@ export class UserController {
 
       if (!user) {
         next(new HttpError(404, `User with ID ${id} not found.`));
+        return;
       }
 
       return res.status(200).send(user);
@@ -52,6 +53,7 @@ export class UserController {
 
       if (!deleted) {
         next(new HttpError(404, `User with ID ${id} not found.`));
+        return;
       }
 
       await this.userRepository.deleteUserById(id);
