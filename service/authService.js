@@ -48,7 +48,6 @@ export class AuthService {
     const payload = {
       userId: userId,
       username: username,
-      role: role,
     };
 
     return jwt.sign(payload, String(JwtConfig["secretKey"]), {
