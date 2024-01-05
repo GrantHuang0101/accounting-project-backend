@@ -17,10 +17,8 @@ export class AuthController {
       const user = await this.authService.registerGeneral(userInfo);
       const token = this.authService.generateToken(user);
 
-      const { userId, username, email, role } = user;
-      res
-        .status(201)
-        .json({ user: { userId, username, email, role }, token: token });
+      const { userId, username, email } = user;
+      res.status(201).json({ user: { userId, username, email }, token: token });
     } catch (error) {
       next(error);
     }
@@ -32,10 +30,8 @@ export class AuthController {
       const user = await this.authService.login(userInfo);
       const token = this.authService.generateToken(user);
 
-      const { userId, username, email, role } = user;
-      res
-        .status(200)
-        .json({ user: { userId, username, email, role }, token: token });
+      const { userId, username, email } = user;
+      res.status(200).json({ user: { userId, username, email }, token: token });
     } catch (error) {
       next(error);
     }
@@ -52,10 +48,8 @@ export class AuthController {
       const user = await this.authService.registerAdmin(userInfo);
       const token = this.authService.generateToken(user);
 
-      const { userId, username, email, role } = user;
-      res
-        .status(201)
-        .json({ user: { userId, username, email, role }, token: token });
+      const { userId, username, email } = user;
+      res.status(201).json({ user: { userId, username, email }, token: token });
     } catch (error) {
       next(error);
     }

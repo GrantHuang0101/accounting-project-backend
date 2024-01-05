@@ -5,7 +5,7 @@ import { handleValidationErrors } from "../middleware/handleValidationErrors.mid
 import { AuthService } from "../service/authService.js";
 import { UserRepository } from "../repository/userRepository.js";
 import { adminGuardMiddleware } from "../middleware/adminGuard.middleware.js";
-import { jwtGuardMiddleware } from "./middleware/jwtGuard.middleware.js";
+import { jwtGuardMiddleware } from "../middleware/jwtGuard.middleware.js";
 
 const router = express.Router();
 
@@ -22,7 +22,7 @@ router.post(
 
 router.post("/login", authController.login);
 
-app.use(jwtGuardMiddleware(authService));
+router.use(jwtGuardMiddleware(authService));
 router.use(adminGuardMiddleware);
 
 router.post(

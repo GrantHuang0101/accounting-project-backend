@@ -44,7 +44,7 @@ export class AuthService {
   };
 
   generateToken = (user) => {
-    const { userId, username, role } = user;
+    const { userId, username } = user;
     const payload = {
       userId: userId,
       username: username,
