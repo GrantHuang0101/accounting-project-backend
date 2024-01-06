@@ -4,8 +4,6 @@ import { userValidationChain } from "../middleware/userValidationChain.js";
 import { handleValidationErrors } from "../middleware/handleValidationErrors.middleware.js";
 import { AuthService } from "../service/authService.js";
 import { UserRepository } from "../repository/userRepository.js";
-import { adminGuardMiddleware } from "../middleware/adminGuard.middleware.js";
-import { jwtGuardMiddleware } from "../middleware/jwtGuard.middleware.js";
 
 const router = express.Router();
 
@@ -21,15 +19,5 @@ router.post(
 );
 
 router.post("/login", authController.login);
-
-router.use(jwtGuardMiddleware(authService));
-router.use(adminGuardMiddleware);
-
-router.post(
-  "/register/admin",
-  userValidationChain,
-  handleValidationErrors,
-  authController.registerAdmin
-);
 
 export default router;

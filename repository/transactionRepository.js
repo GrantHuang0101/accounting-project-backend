@@ -13,6 +13,7 @@ export class TransactionRepository {
     SELECT * 
     FROM transactions
     WHERE userId = ?
+    ORDER BY transactionDate DESC;
     `,
       [userId]
     );
@@ -35,14 +36,15 @@ export class TransactionRepository {
     accountId,
     amount,
     transactionDate,
-    description
+    description,
+    dc
   ) => {
     const [result] = await pool.query(
       `
-    INSERT INTO transactions (userId, accountId, amount, transactionDate, description)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO transactions (userId, accountId, amount, transactionDate, description, dc)
+    VALUES (?, ?, ?, ?, ?, ?)
     `,
-      [userId, accountId, amount, transactionDate, description]
+      [userId, accountId, amount, transactionDate, description, dc]
     );
     const newTransactionId = result.insertId;
     return this.getTransactionById(newTransactionId);
@@ -62,7 +64,7 @@ export class TransactionRepository {
   };
 
   updateTransactionById = async (transactionId, updates) => {
-    const { accountId, amount, transactionDate, description } = updates;
+    const { accountId, amount, transactionDate, description, dc } = updates;
     await pool.query(
       `
     UPDATE transactions
@@ -71,9 +73,10 @@ export class TransactionRepository {
       amount = ?,
       transactionDate = ?,
       description = ?
+      dc = ?
     WHERE transactionId = ?
     `,
-      [accountId, amount, transactionDate, description, transactionId]
+      [accountId, amount, transactionDate, description, dc, transactionId]
     );
 
     const updatedTransaction = await this.getTransactionById(transactionId);
