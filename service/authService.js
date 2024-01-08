@@ -51,7 +51,6 @@ export class AuthService {
     };
 
     return jwt.sign(payload, String(JwtConfig["secretKey"]), {
-      expiresIn: JwtConfig["expiresIn"],
       algorithm: "HS256",
       audience: JwtConfig["audience"],
       issuer: JwtConfig["issuer"],

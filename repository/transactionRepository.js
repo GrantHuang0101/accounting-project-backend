@@ -10,10 +10,14 @@ export class TransactionRepository {
   getAllTransactionsByUserId = async (userId) => {
     const [rows] = await pool.query(
       `
-    SELECT * 
+    SELECT 
+        transactions.*,
+        accounts.accountName,
+        accounts.type
     FROM transactions
-    WHERE userId = ?
-    ORDER BY transactionDate DESC;
+    JOIN accounts ON transactions.accountId = accounts.accountId
+    WHERE transactions.userId = ?
+    ORDER BY transactions.transactionDate DESC, transactions.dc DESC;
     `,
       [userId]
     );
@@ -37,14 +41,15 @@ export class TransactionRepository {
     amount,
     transactionDate,
     description,
-    dc
+    dc,
+    entryId
   ) => {
     const [result] = await pool.query(
       `
-    INSERT INTO transactions (userId, accountId, amount, transactionDate, description, dc)
-    VALUES (?, ?, ?, ?, ?, ?)
+    INSERT INTO transactions (userId, accountId, amount, transactionDate, description, dc, entryId)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
     `,
-      [userId, accountId, amount, transactionDate, description, dc]
+      [userId, accountId, amount, transactionDate, description, dc, entryId]
     );
     const newTransactionId = result.insertId;
     return this.getTransactionById(newTransactionId);

@@ -32,7 +32,7 @@ export class AccountController {
 
   createAccount = async (req, res, next) => {
     try {
-      const { accountName } = req.body;
+      const { accountName, type } = req.body;
       const newAccount = await this.accountRepository.createAccount(
         accountName
       );

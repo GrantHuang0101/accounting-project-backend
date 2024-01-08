@@ -18,13 +18,13 @@ export class AccountRepository {
     return rows[0];
   };
 
-  createAccount = async (accountName) => {
+  createAccount = async (accountName, type) => {
     const [result] = await pool.query(
       `
-      INSERT INTO accounts (accountName)
-      VALUES (?)
+      INSERT INTO accounts (accountName, type)
+      VALUES (?, ?)
       `,
-      [accountName]
+      [accountName, type]
     );
     const newAccountId = result.insertId;
     return this.getAccountById(newAccountId);

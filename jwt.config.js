@@ -8,7 +8,6 @@ export const JwtConfig = {
     }
     return process.env.JWT_SECRET;
   },
-  expiresIn: process.env.JWT_EXPIRES_IN || "1d",
   audience: process.env.JWT_AUDIENCE,
   issuer: process.env.JWT_ISSUER,
 };
