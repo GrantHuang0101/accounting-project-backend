@@ -11,6 +11,8 @@ const transactionController = new TransactionController(transactionRepository);
 
 router.get("/user", transactionController.getAllTransactionsByUserId);
 
+router.get("/:id", transactionController.getTransactionById);
+
 router.post(
   "/",
   transactionValidationChain,

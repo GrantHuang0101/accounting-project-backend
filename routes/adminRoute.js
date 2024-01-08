@@ -46,7 +46,6 @@ router.delete("/users/:id", userController.deleteUserById);
 
 const transactionRepository = new TransactionRepository();
 const transactionController = new TransactionController(transactionRepository);
-router.get("/transactions", transactionController.getAllTransactions);
-router.get("/transactions/:id", transactionController.getTransactionById);
+router.get("/alltransactions", transactionController.getAllTransactions);
 
 export default router;

@@ -19,9 +19,9 @@ export class TransactionController {
   getTransactionById = async (req, res, next) => {
     try {
       const id = req.params.id;
-      const transaction = await this.transactionRepository.getTransactionById(
-        id
-      );
+      const transactionRow =
+        await this.transactionRepository.getTransactionById(id);
+      const transaction = transactionRow[0];
 
       if (!transaction) {
         next(new HttpError(404, `Transaction with ID ${id} not found.`));
@@ -32,7 +32,7 @@ export class TransactionController {
         return;
       }
 
-      return res.status(200).send(transaction);
+      return res.status(200).send(transactionRow);
     } catch (error) {
       next(error);
     }
@@ -101,7 +101,9 @@ export class TransactionController {
   deleteTransactionById = async (req, res, next) => {
     try {
       const id = req.params.id;
-      const deleted = await this.transactionRepository.getTransactionById(id);
+      const transactionRow =
+        await this.transactionRepository.getTransactionById(id);
+      const deleted = transactionRow[0];
 
       if (!deleted) {
         next(new HttpError(404, `Transaction with ID ${id} not found.`));

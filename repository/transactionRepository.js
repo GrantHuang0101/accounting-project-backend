@@ -25,14 +25,30 @@ export class TransactionRepository {
   };
 
   getTransactionById = async (transactionId) => {
-    const [rows] = await pool.query(
-      `SELECT * 
-    FROM transactions
-    WHERE transactionId = ?
+    const [transaction] = await pool.query(
+      `
+      SELECT *
+      FROM transactions
+      WHERE transactionId = ?
     `,
       [transactionId]
     );
-    return rows[0];
+
+    const entryId = transaction[0].entryId;
+    const [rows] = await pool.query(
+      `
+      SELECT 
+        transactions.*,
+        accounts.accountName,
+        accounts.type
+      FROM transactions
+      JOIN accounts ON transactions.accountId = accounts.accountId
+      WHERE transactions.entryId = ?
+    `,
+      [entryId]
+    );
+
+    return rows;
   };
 
   createTransaction = async (
