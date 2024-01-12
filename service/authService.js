@@ -44,14 +44,13 @@ export class AuthService {
   };
 
   generateToken = (user) => {
-    const { userId, username, role } = user;
+    const { userId, username } = user;
     const payload = {
       userId: userId,
       username: username,
     };
 
     return jwt.sign(payload, String(JwtConfig["secretKey"]), {
-      expiresIn: JwtConfig["expiresIn"],
       algorithm: "HS256",
       audience: JwtConfig["audience"],
       issuer: JwtConfig["issuer"],

@@ -10,9 +10,14 @@ export class TransactionRepository {
   getAllTransactionsByUserId = async (userId) => {
     const [rows] = await pool.query(
       `
-    SELECT * 
+    SELECT 
+        transactions.*,
+        accounts.accountName,
+        accounts.type
     FROM transactions
-    WHERE userId = ?
+    JOIN accounts ON transactions.accountId = accounts.accountId
+    WHERE transactions.userId = ?
+    ORDER BY transactions.transactionDate DESC, transactions.dc DESC;
     `,
       [userId]
     );
@@ -20,14 +25,30 @@ export class TransactionRepository {
   };
 
   getTransactionById = async (transactionId) => {
-    const [rows] = await pool.query(
-      `SELECT * 
-    FROM transactions
-    WHERE transactionId = ?
+    const [transaction] = await pool.query(
+      `
+      SELECT *
+      FROM transactions
+      WHERE transactionId = ?
     `,
       [transactionId]
     );
-    return rows[0];
+
+    const entryId = transaction[0].entryId;
+    const [rows] = await pool.query(
+      `
+      SELECT 
+        transactions.*,
+        accounts.accountName,
+        accounts.type
+      FROM transactions
+      JOIN accounts ON transactions.accountId = accounts.accountId
+      WHERE transactions.entryId = ?
+    `,
+      [entryId]
+    );
+
+    return rows;
   };
 
   createTransaction = async (
@@ -35,14 +56,16 @@ export class TransactionRepository {
     accountId,
     amount,
     transactionDate,
-    description
+    description,
+    dc,
+    entryId
   ) => {
     const [result] = await pool.query(
       `
-    INSERT INTO transactions (userId, accountId, amount, transactionDate, description)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO transactions (userId, accountId, amount, transactionDate, description, dc, entryId)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
     `,
-      [userId, accountId, amount, transactionDate, description]
+      [userId, accountId, amount, transactionDate, description, dc, entryId]
     );
     const newTransactionId = result.insertId;
     return this.getTransactionById(newTransactionId);
@@ -62,7 +85,7 @@ export class TransactionRepository {
   };
 
   updateTransactionById = async (transactionId, updates) => {
-    const { accountId, amount, transactionDate, description } = updates;
+    const { accountId, amount, transactionDate, description, dc } = updates;
     await pool.query(
       `
     UPDATE transactions
@@ -71,9 +94,10 @@ export class TransactionRepository {
       amount = ?,
       transactionDate = ?,
       description = ?
+      dc = ?
     WHERE transactionId = ?
     `,
-      [accountId, amount, transactionDate, description, transactionId]
+      [accountId, amount, transactionDate, description, dc, transactionId]
     );
 
     const updatedTransaction = await this.getTransactionById(transactionId);
