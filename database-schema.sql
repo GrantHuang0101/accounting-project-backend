@@ -11,7 +11,8 @@ CREATE TABLE users (
 
 CREATE TABLE accounts (
     accountID INT PRIMARY KEY AUTO_INCREMENT,
-    accountName VARCHAR(255) NOT NULL
+    accountName VARCHAR(255) NOT NULL,
+    type VARCHAR(50) NOT NULL,
 );
 
 CREATE TABLE transactions (
@@ -21,6 +22,9 @@ CREATE TABLE transactions (
     amount DECIMAL(15, 2) NOT NULL,
     transactionDate DATE NOT NULL,
     description TEXT,
+    dc CHAR(6) NOT NULL,
+    entryId VARCHAR(50) NOT NULL,
     FOREIGN KEY (userId) REFERENCES users(userId),
     FOREIGN KEY (accountId) REFERENCES accounts(accountId)
+
 );
