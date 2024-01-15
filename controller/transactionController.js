@@ -1,8 +1,9 @@
 import { HttpError } from "../utils/errors/httpError.js";
 
 export class TransactionController {
-  constructor(transactionRepository) {
+  constructor(transactionRepository, transactionService) {
     this.transactionRepository = transactionRepository;
+    this.transactionService = transactionService;
   }
 
   getAllTransactions = async (req, res, next) => {
@@ -49,74 +50,114 @@ export class TransactionController {
     }
   };
 
-  createTransaction = async (req, res, next) => {
+  /////////
+
+  editTransactions = async (req, res, next) => {
+    const userId = res.locals.user.userId;
+    try {
+      const patchData = req.body;
+      const { update, create, deleted } =
+        await this.transactionService.classifyEditTransactions(patchData);
+
+      //update check
+      await update.map(async (entry) => {
+        const transaction = await this.transactionRepository.getTransactionById(
+          entry.transactionId
+        );
+
+        if (!transaction) {
+          throw new HttpError(
+            404,
+            `Transaction with ID ${entry.transactionId} not found.`
+          );
+        }
+        if (transaction[0].userId !== userId) {
+          throw new HttpError(
+            403,
+            "Forbidden: You do not own these transactions."
+          );
+        }
+      });
+
+      //delete check
+      for (const id of deleted) {
+        const transactionRow =
+          await this.transactionRepository.getTransactionById(id);
+
+        if (!transactionRow[0]) {
+          return next(
+            new HttpError(404, `Transaction with ID ${id} not found.`)
+          );
+        }
+
+        if (transactionRow[0].userId !== userId) {
+          return next(
+            new HttpError(403, "Forbidden: You do not own these transactions.")
+          );
+        }
+      }
+
+      await this.transactionRepository.editTransactions(
+        userId,
+        create,
+        update,
+        deleted
+      );
+
+      return res.status(200).send("Edit successfully");
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  //////////
+
+  createTransactions = async (req, res, next) => {
     try {
       const userId = res.locals.user.userId;
-      const { accountId, amount, transactionDate, description, dc, entryId } =
-        req.body;
-      const newTransaction = await this.transactionRepository.createTransaction(
+      const transactionsData = req.body;
+
+      const result = await this.transactionRepository.createTransactions(
         userId,
-        accountId,
-        amount,
-        transactionDate,
-        description,
-        dc,
-        entryId
+        transactionsData
       );
 
-      return res.status(201).send(newTransaction);
+      return res.status(201).send(result);
     } catch (error) {
       next(error);
     }
   };
 
-  updateTransactionById = async (req, res, next) => {
+  deleteTransactionsByIds = async (req, res, next) => {
     try {
-      const id = req.params.id;
-      const updates = req.body;
+      const { transactionIds } = req.body;
 
-      const transaction = await this.transactionRepository.getTransactionById(
-        id
-      );
-
-      if (!transaction) {
-        next(new HttpError(404, `Transaction with ID ${id} not found.`));
-        return;
+      if (!Array.isArray(transactionIds)) {
+        return next(
+          new HttpError(400, "Invalid input: transactionIds must be an array.")
+        );
       }
 
-      if (transaction.userId !== res.locals.user.userId) {
-        next(new HttpError(403, "Forbidden: You do not own this transaction."));
-        return;
+      for (const id of transactionIds) {
+        const transactionRow =
+          await this.transactionRepository.getTransactionById(id);
+
+        if (!transactionRow[0]) {
+          return next(
+            new HttpError(404, `Transaction with ID ${id} not found.`)
+          );
+        }
+
+        if (transactionRow[0].userId !== res.locals.user.userId) {
+          return next(
+            new HttpError(403, "Forbidden: You do not own these transactions.")
+          );
+        }
       }
 
-      const updatedTransaction =
-        await this.transactionRepository.updateTransactionById(id, updates);
+      await this.transactionRepository.deleteTransactions(transactionIds);
 
-      return res.status(200).send(updatedTransaction);
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  deleteTransactionById = async (req, res, next) => {
-    try {
-      const id = req.params.id;
-      const transactionRow =
-        await this.transactionRepository.getTransactionById(id);
-      const deleted = transactionRow[0];
-
-      if (!deleted) {
-        next(new HttpError(404, `Transaction with ID ${id} not found.`));
-        return;
-      }
-
-      if (deleted.userId !== res.locals.user.userId) {
-        next(new HttpError(403, "Forbidden: You do not own this transaction."));
-        return;
-      }
-
-      await this.transactionRepository.deleteTransactionById(id);
-      return res.status(204).send(`Transaction with ID ${id} deleted.`);
+      return res.status(204).send("Transactions deleted successfully.");
     } catch (error) {
       next(error);
     }

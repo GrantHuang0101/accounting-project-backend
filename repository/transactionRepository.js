@@ -51,56 +51,140 @@ export class TransactionRepository {
     return rows;
   };
 
-  createTransaction = async (
-    userId,
-    accountId,
-    amount,
-    transactionDate,
-    description,
-    dc,
-    entryId
-  ) => {
-    const [result] = await pool.query(
-      `
-    INSERT INTO transactions (userId, accountId, amount, transactionDate, description, dc, entryId)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-    `,
-      [userId, accountId, amount, transactionDate, description, dc, entryId]
-    );
-    const newTransactionId = result.insertId;
-    return this.getTransactionById(newTransactionId);
+  createTransactions = async (userId, transactionsData) => {
+    const connection = await pool.getConnection();
+
+    try {
+      await connection.beginTransaction();
+
+      const values = transactionsData.map((transaction) => [
+        userId,
+        transaction.accountId,
+        transaction.amount,
+        transaction.transactionDate,
+        transaction.description,
+        transaction.dc,
+        transaction.entryId,
+      ]);
+
+      const [result] = await connection.query(
+        `
+      INSERT INTO transactions (userId, accountId, amount, transactionDate, description, dc, entryId)
+      VALUES ?
+      `,
+        [values]
+      );
+
+      await connection.commit();
+
+      return result;
+    } catch (error) {
+      await connection.rollback();
+      throw error;
+    } finally {
+      connection.release();
+    }
   };
 
-  deleteTransactionById = async (transactionId) => {
-    await pool.query(
-      `
-    DELETE FROM transactions
-    WHERE transactionId = ?
-    `,
-      [transactionId]
-    );
+  deleteTransactions = async (transactionIds) => {
+    const connection = await pool.getConnection();
 
-    console.log(`Transaction with ID ${transactionId} has been deleted.`);
-    return null;
+    try {
+      await connection.beginTransaction();
+
+      const result = await connection.query(
+        `
+            DELETE FROM transactions
+            WHERE transactionId IN (?)
+            `,
+        [transactionIds]
+      );
+
+      await connection.commit();
+
+      console.log(
+        `Transactions with IDs ${transactionIds.join(", ")} have been deleted.`
+      );
+      return result;
+    } catch (error) {
+      await connection.rollback();
+      throw error;
+    } finally {
+      connection.release();
+    }
   };
 
-  updateTransactionById = async (transactionId, updates) => {
-    const { accountId, amount, transactionDate, description, dc } = updates;
-    await pool.query(
-      `
-    UPDATE transactions
-    SET
-      accountId = ?,
-      amount = ?,
-      transactionDate = ?,
-      description = ?
-      dc = ?
-    WHERE transactionId = ?
-    `,
-      [accountId, amount, transactionDate, description, dc, transactionId]
-    );
+  editTransactions = async (userId, creates, updates, deleted) => {
+    const connection = await pool.getConnection();
 
-    const updatedTransaction = await this.getTransactionById(transactionId);
-    return updatedTransaction;
+    try {
+      await connection.beginTransaction();
+      console.log(creates);
+      console.log(updates);
+      console.log(deleted);
+
+      // Create
+      const createValues = creates.map((transaction) => [
+        userId,
+        transaction.accountId,
+        transaction.amount,
+        transaction.transactionDate,
+        transaction.description,
+        transaction.dc,
+        transaction.entryId,
+      ]);
+
+      await connection.query(
+        `
+      INSERT INTO transactions (userId, accountId, amount, transactionDate, description, dc, entryId)
+      VALUES ?;
+      `,
+        [createValues]
+      );
+
+      // Update
+      const updateValues = updates.map((update) => [
+        update.accountId,
+        parseFloat(update.amount),
+        update.transactionDate,
+        update.description,
+        update.dc,
+        update.transactionId,
+      ]);
+
+      for (const values of updateValues) {
+        await connection.query(
+          `
+            UPDATE transactions
+            SET
+                accountId = ?,
+                amount = ?,
+                transactionDate = ?,
+                description = ?,
+                dc = ?
+            WHERE transactionId = ?;
+            `,
+          values
+        );
+      }
+
+      //Delete
+      await connection.query(
+        `
+            DELETE FROM transactions
+            WHERE transactionId IN (?);
+            `,
+        [deleted]
+      );
+
+      await connection.commit();
+
+      return;
+    } catch (error) {
+      await connection.rollback();
+      throw error;
+    } finally {
+      connection.release();
+    }
   };
 }
