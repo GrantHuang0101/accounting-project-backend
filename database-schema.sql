@@ -12,7 +12,7 @@ CREATE TABLE users (
 CREATE TABLE accounts (
     accountID INT PRIMARY KEY AUTO_INCREMENT,
     accountName VARCHAR(255) NOT NULL,
-    type VARCHAR(50) NOT NULL,
+    type VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE transactions (

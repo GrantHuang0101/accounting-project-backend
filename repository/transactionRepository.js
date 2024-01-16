@@ -119,42 +119,42 @@ export class TransactionRepository {
 
     try {
       await connection.beginTransaction();
-      console.log(creates);
-      console.log(updates);
-      console.log(deleted);
 
-      // Create
-      const createValues = creates.map((transaction) => [
-        userId,
-        transaction.accountId,
-        transaction.amount,
-        transaction.transactionDate,
-        transaction.description,
-        transaction.dc,
-        transaction.entryId,
-      ]);
+      if (creates.length !== 0) {
+        // Create
+        const createValues = creates.map((transaction) => [
+          userId,
+          transaction.accountId,
+          transaction.amount,
+          transaction.transactionDate,
+          transaction.description,
+          transaction.dc,
+          transaction.entryId,
+        ]);
 
-      await connection.query(
-        `
+        await connection.query(
+          `
       INSERT INTO transactions (userId, accountId, amount, transactionDate, description, dc, entryId)
       VALUES ?;
       `,
-        [createValues]
-      );
+          [createValues]
+        );
+      }
 
-      // Update
-      const updateValues = updates.map((update) => [
-        update.accountId,
-        parseFloat(update.amount),
-        update.transactionDate,
-        update.description,
-        update.dc,
-        update.transactionId,
-      ]);
+      if (updates.length !== 0) {
+        // Update
+        const updateValues = updates.map((update) => [
+          update.accountId,
+          parseFloat(update.amount),
+          update.transactionDate,
+          update.description,
+          update.dc,
+          update.transactionId,
+        ]);
 
-      for (const values of updateValues) {
-        await connection.query(
-          `
+        for (const values of updateValues) {
+          await connection.query(
+            `
             UPDATE transactions
             SET
                 accountId = ?,
@@ -164,18 +164,21 @@ export class TransactionRepository {
                 dc = ?
             WHERE transactionId = ?;
             `,
-          values
-        );
+            values
+          );
+        }
       }
 
-      //Delete
-      await connection.query(
-        `
+      if (deleted.length !== 0) {
+        //Delete
+        await connection.query(
+          `
             DELETE FROM transactions
             WHERE transactionId IN (?);
             `,
-        [deleted]
-      );
+          [deleted]
+        );
+      }
 
       await connection.commit();
 
