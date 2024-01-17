@@ -1,4 +1,4 @@
-import { HttpError } from "../utils/errors/httpError.js";
+import { NEW_ENTRY_ID } from "../utils/errors/constants.js";
 
 export class TransactionService {
   classifyEditTransactions = async (patchData) => {
@@ -6,9 +6,8 @@ export class TransactionService {
     const update = [];
     const create = [];
 
-    const NEW_ENTRY = -1;
     for (const entry of patch) {
-      if (entry.transactionId === NEW_ENTRY) {
+      if (entry.transactionId === NEW_ENTRY_ID) {
         create.push(entry);
       } else {
         update.push(entry);
