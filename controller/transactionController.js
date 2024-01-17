@@ -50,8 +50,7 @@ export class TransactionController {
     }
   };
 
-  /////////
-
+  // Edit
   editTransactions = async (req, res, next) => {
     const userId = res.locals.user.userId;
     try {
@@ -61,42 +60,23 @@ export class TransactionController {
 
       //update check
       await update.map(async (entry) => {
-        const transaction = await this.transactionRepository.getTransactionById(
-          entry.transactionId
-        );
+        const transactions =
+          await this.transactionRepository.getTransactionById(
+            entry.transactionId
+          );
 
-        if (!transaction) {
-          throw new HttpError(
-            404,
-            `Transaction with ID ${entry.transactionId} not found.`
-          );
-        }
-        if (transaction[0].userId !== userId) {
-          throw new HttpError(
-            403,
-            "Forbidden: You do not own these transactions."
-          );
-        }
+        this.checkTransactionStatus(transactions, userId);
       });
 
       //delete check
       for (const id of deleted) {
-        const transactionRow =
+        const transactions =
           await this.transactionRepository.getTransactionById(id);
 
-        if (!transactionRow[0]) {
-          return next(
-            new HttpError(404, `Transaction with ID ${id} not found.`)
-          );
-        }
-
-        if (transactionRow[0].userId !== userId) {
-          return next(
-            new HttpError(403, "Forbidden: You do not own these transactions.")
-          );
-        }
+        this.checkTransactionStatus(transactions, userId);
       }
 
+      // Process Edit
       await this.transactionRepository.editTransactions(
         userId,
         create,
@@ -110,8 +90,7 @@ export class TransactionController {
     }
   };
 
-  //////////
-
+  // Create
   createTransactions = async (req, res, next) => {
     try {
       const userId = res.locals.user.userId;
@@ -128,6 +107,7 @@ export class TransactionController {
     }
   };
 
+  // Delete
   deleteTransactionsByIds = async (req, res, next) => {
     try {
       const { transactionIds } = req.body;
@@ -160,6 +140,18 @@ export class TransactionController {
       return res.status(204).send("Transactions deleted successfully.");
     } catch (error) {
       next(error);
+    }
+  };
+
+  // Check Status
+  checkTransactionStatus = async (transactions, userId) => {
+    if (!transactions) {
+      return next(new HttpError(404, `Transaction not found.`));
+    }
+    if (transactions[0].userId !== userId) {
+      return next(
+        new HttpError(403, "Forbidden: You do not own these transactions.")
+      );
     }
   };
 }

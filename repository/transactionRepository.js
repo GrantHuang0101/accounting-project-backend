@@ -51,21 +51,14 @@ export class TransactionRepository {
     return rows;
   };
 
+  // Create
   createTransactions = async (userId, transactionsData) => {
     const connection = await pool.getConnection();
 
     try {
       await connection.beginTransaction();
 
-      const values = transactionsData.map((transaction) => [
-        userId,
-        transaction.accountId,
-        transaction.amount,
-        transaction.transactionDate,
-        transaction.description,
-        transaction.dc,
-        transaction.entryId,
-      ]);
+      const values = this.mappingForCreate(transactionsData, userId);
 
       const [result] = await connection.query(
         `
@@ -86,6 +79,7 @@ export class TransactionRepository {
     }
   };
 
+  // Delete
   deleteTransactions = async (transactionIds) => {
     const connection = await pool.getConnection();
 
@@ -114,6 +108,7 @@ export class TransactionRepository {
     }
   };
 
+  // Edit
   editTransactions = async (userId, creates, updates, deleted) => {
     const connection = await pool.getConnection();
 
@@ -122,15 +117,7 @@ export class TransactionRepository {
 
       if (creates.length !== 0) {
         // Create
-        const createValues = creates.map((transaction) => [
-          userId,
-          transaction.accountId,
-          transaction.amount,
-          transaction.transactionDate,
-          transaction.description,
-          transaction.dc,
-          transaction.entryId,
-        ]);
+        const createValues = this.mappingForCreate(creates, userId);
 
         await connection.query(
           `
@@ -143,14 +130,7 @@ export class TransactionRepository {
 
       if (updates.length !== 0) {
         // Update
-        const updateValues = updates.map((update) => [
-          update.accountId,
-          parseFloat(update.amount),
-          update.transactionDate,
-          update.description,
-          update.dc,
-          update.transactionId,
-        ]);
+        const updateValues = this.mappingForUpdate(updates);
 
         for (const values of updateValues) {
           await connection.query(
@@ -170,7 +150,7 @@ export class TransactionRepository {
       }
 
       if (deleted.length !== 0) {
-        //Delete
+        // Delete
         await connection.query(
           `
             DELETE FROM transactions
@@ -189,5 +169,31 @@ export class TransactionRepository {
     } finally {
       connection.release();
     }
+  };
+
+  //// mapping methods
+  mappingForCreate = (createTransactionsData, userId) => {
+    const result = createTransactionsData.map((transaction) => [
+      userId,
+      transaction.accountId,
+      transaction.amount,
+      transaction.transactionDate,
+      transaction.description,
+      transaction.dc,
+      transaction.entryId,
+    ]);
+    return result;
+  };
+
+  mappingForUpdate = (updateTransactionsData) => {
+    const result = updateTransactionsData.map((update) => [
+      update.accountId,
+      parseFloat(update.amount),
+      update.transactionDate,
+      update.description,
+      update.dc,
+      update.transactionId,
+    ]);
+    return result;
   };
 }
