@@ -6,7 +6,7 @@ The server of this project. Using Node.js, Express.js, and MySQL database.
 > ```npm install```
 
 2. **Create .env file.**
-- Run `createJwtKey.js` to generate your testing JWT_SECRET.
+- Run `node createJwtKey.js` to generate your testing JWT_SECRET.
 ```
 MYSQL_HOST=""
 MYSQL_USER=""
@@ -17,6 +17,8 @@ MYSQL_PORT=""
 PORT=8080
 
 JWT_SECRET=""
+JWT_AUDIENCE=""
+JWT_ISSUER=""
 ```
 
 
