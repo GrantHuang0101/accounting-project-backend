@@ -12,6 +12,7 @@ import { jwtGuardMiddleware } from "./middleware/jwtGuard.middleware.js";
 import { adminGuardMiddleware } from "./middleware/adminGuard.middleware.js";
 import { UserRepository } from "./repository/userRepository.js";
 import { AuthService } from "./service/authService.js";
+import { insertAccountsFromCsv } from "./accountsTableConfig.js";
 dotenv.config();
 
 const app = express();
@@ -43,3 +44,6 @@ checkDatabaseConnection().then(() => {
     console.log(`Server is running on port ${PORT}`);
   });
 });
+
+// Insertion accounts data
+insertAccountsFromCsv();

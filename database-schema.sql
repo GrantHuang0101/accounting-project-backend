@@ -1,6 +1,3 @@
-CREATE DATABASE project_one;
-USE project_one;
-
 CREATE TABLE users (
     userId INT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(255) NOT NULL,

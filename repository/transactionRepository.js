@@ -1,5 +1,4 @@
 import { pool } from "../database.js";
-import { HttpError } from "../utils/errors/httpError.js";
 
 export class TransactionRepository {
   getAllTransactions = async () => {

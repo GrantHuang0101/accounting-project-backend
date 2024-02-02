@@ -1,0 +1,84 @@
+﻿accountName,type
+Cash,Asset
+Accounts Receivable,Asset
+Inventory,Asset
+Prepaid Expenses,Asset
+PP&E,Asset
+Intangible Assets,Asset
+Accumulated Depreciation,Asset
+Short-Term Investments,Asset
+Long-Term Investments,Asset
+Land,Asset
+Vehicles,Asset
+Notes Receivable,Asset
+Allowance for Doubtful Accounts,Asset
+Prepaid Rent,Asset
+Security Deposits,Asset
+Other Current Assets,Asset
+Other Investments,Asset
+Other Intangible Assets,Asset
+Other Receivables,Asset
+Miscellaneous Assets,Asset
+Accounts Payable,Liability
+Notes Payable,Liability
+Long-Term Debt,Liability
+Income Tax Payable,Liability
+Warranty Liability,Liability
+Unearned Revenue,Liability
+Mortgage Payable,Liability
+Bonds Payable,Liability
+Lease Liabilities,Liability
+Employee Benefits Payable,Liability
+Sales Tax Payable,Liability
+Dividends Payable,Liability
+Salaries and Wages Payable, Liability
+Other Current Liabilities,Liability
+Other Long-Term Liabilities,Liability
+Accrued Liabilities - Other,Liability
+Common Stock,Equity
+Preferred Stock,Equity
+Retained Earnings,Equity
+Dividends,Equity
+Treasury Stock,Equity
+Additional Paid-in Capital,Equity
+Share Capital,Equity
+Share Premium,Equity
+Owner's Equity,Equity
+Equity Investments,Equity
+Other Equity,Equity
+Additional Comprehensive Income,Equity
+Other Comprehensive Income Adjustment,Equity
+Equity Adjustments,Equity
+Sales Revenue,Revenue
+Service Revenue,Revenue
+Interest Income,Revenue
+Dividend Income,Revenue
+Subscription Revenue,Revenue
+Membership Fees,Revenue
+Gains on Investments,Revenue
+Other Revenue,Revenue
+Non-Operating Revenue,Revenue
+Other Sales Revenue,Revenue
+Service Fees - Other,Revenue
+License and Royalty Revenue,Revenue
+Gain on Sale of Assets,Revenue
+Cost of Goods Sold,Expense
+Interest Expense,Expense
+Income Tax Expense,Expense
+Utilities Expense,Expense
+Rent Expense,Expense
+Salaries and Wages Expense,Expense
+Depreciation Expense,Expense
+Operating Expenses,Expense
+Advertising Expense,Expense
+Insurance Expense,Expense
+Travel and Entertainment Expense,Expense
+Legal and Professional Fees,Expense
+Bad Debt Expense,Expense
+Research and Development Expense,Expense
+Office Supplies Expense,Expense
+Utilities Expense,Expense
+Other Operating Expenses,Expense
+Miscellaneous Expenses,Expense
+General and Administrative Expenses,Expense
+Other Selling Expenses,Expense
