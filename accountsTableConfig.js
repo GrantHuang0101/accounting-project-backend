@@ -26,8 +26,9 @@ const insertAccountsFromCsv = async () => {
     const dataRows = csvData
       .trim()
       .split("\n")
-      .map((row) => row.split(","));
-    dataRows.shift();
+      .slice(1)
+      .map((row) => row.split(",").map((field) => field.trim()));
+
     const connection = await pool.getConnection();
     try {
       await connection.beginTransaction();
